@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VB Guru's CV - Windows 3.11 Edition</title>
+    <style>
+        /* Windows 3.11 Color Palette */
+        :root {
+            --win-bg: #008080;
+            --win-gray: #C0C0C0;
+            --win-dark-gray: #808080;
+            --win-white: #FFFFFF;
+            --win-black: #000000;
+            --win-title-blue: #000080;
+            --win-title-inactive: #808080;
+            --win-highlight: #DFDFDF;
+            --win-shadow: #404040;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Pixel font for authentic look */
+        @font-face {
+            font-family: 'MS Sans Serif';
+            src: local('MS Sans Serif'), local('Microsoft Sans Serif'), local('Segoe UI');
+        }
+
+        body {
+            font-family: 'MS Sans Serif', 'Segoe UI', Tahoma, sans-serif;
+            font-size: 11px;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+        }
+
+        /* Desktop */
+        .desktop {
+            width: 100%;
+            height: calc(100% - 28px);
+            background-color: var(--win-bg);
+            position: relative;
+            /* Classic Win 3.11 pattern */
+            background-image: 
+                linear-gradient(45deg, #007070 25%, transparent 25%),
+                linear-gradient(-45deg, #007070 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #007070 75%),
+                linear-gradient(-45deg, transparent 75%, #007070 75%);
+            background-size: 4px 4px;
+            background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+        }
+
+        /* Desktop Icons */
+        .desktop-icon {
+            position: absolute;
+            width: 64px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px;
+            cursor: default;
+        }
+
+        .desktop-icon:hover {
+            background: rgba(0, 0, 128, 0.3);
+        }
+
+        .desktop-icon .icon {
+            width: 32px;
+            height: 32px;
+            background: var(--win-gray);
+            border: 2px outset var(--win-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .desktop-icon .label {
+            color: white;
+            text-align: center;
+            font-size: 10px;
+            text-shadow: 1px 1px 1px black;
+            word-wrap: break-word;
+        }
+
+        /* Window */
+        .window {
+            position: absolute;
+            min-width: 300px;
+            min-height: 200px;
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+            box-shadow: 
+                inset 1px 1px 0 var(--win-white),
+                inset -1px -1px 0 var(--win-dark-gray);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .window.minimized {
+            display: none;
+        }
+
+        /* Title Bar */
+        .title-bar {
+            background: var(--win-title-blue);
+            color: white;
+            padding: 2px 3px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            cursor: move;
+            flex-shrink: 0;
+        }
+
+        .title-bar.inactive {
+            background: var(--win-title-inactive);
+        }
+
+        .title-bar-text {
+            flex-grow: 1;
+            font-weight: bold;
+            padding-left: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .title-bar-controls {
+            display: flex;
+            gap: 2px;
+        }
+
+        .title-bar-controls button {
+            width: 18px;
+            height: 14px;
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+            font-size: 9px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .title-bar-controls button:active {
+            border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+        }
+
+        .system-menu {
+            width: 18px;
+            height: 14px;
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            cursor: default;
+        }
+
+        .system-menu span {
+            width: 10px;
+            height: 1px;
+            background: var(--win-black);
+        }
+
+        /* Menu Bar */
+        .menu-bar {
+            background: var(--win-gray);
+            padding: 2px;
+            border-bottom: 1px solid var(--win-dark-gray);
+            display: flex;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+
+        .menu-item {
+            padding: 2px 8px;
+            cursor: default;
+        }
+
+        .menu-item:hover {
+            background: var(--win-title-blue);
+            color: white;
+        }
+
+        .menu-item span {
+            text-decoration: underline;
+        }
+
+        /* Window Content */
+        .window-body {
+            flex-grow: 1;
+            overflow: auto;
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+            margin: 2px;
+        }
+
+        .window-content {
+            padding: 10px;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        /* CV Specific Styles */
+        .window-content h1 {
+            font-size: 16px;
+            color: var(--win-title-blue);
+            text-align: center;
+            border-bottom: 2px solid var(--win-title-blue);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .window-content h2 {
+            font-size: 13px;
+            color: var(--win-title-blue);
+            background: var(--win-highlight);
+            padding: 4px;
+            margin: 12px 0 8px 0;
+            border: 1px solid;
+            border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+        }
+
+        .window-content h3 {
+            font-size: 11px;
+            font-weight: bold;
+            margin: 8px 0 4px 0;
+        }
+
+        .window-content p {
+            margin: 4px 0;
+        }
+
+        .window-content ul {
+            margin: 4px 0 4px 20px;
+        }
+
+        .window-content li {
+            margin: 2px 0;
+        }
+
+        .window-content .highlight {
+            color: var(--win-title-blue);
+            font-weight: bold;
+        }
+
+        .window-content strong {
+            font-weight: bold;
+        }
+
+        .window-content footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid var(--win-dark-gray);
+            text-align: center;
+            color: var(--win-dark-gray);
+            font-style: italic;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: var(--win-gray);
+            border-top: 1px solid var(--win-highlight);
+            padding: 2px 4px;
+            font-size: 10px;
+            display: flex;
+            flex-shrink: 0;
+        }
+
+        .status-bar-field {
+            border: 1px solid;
+            border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+            padding: 1px 4px;
+            flex-grow: 1;
+        }
+
+        /* Resize Handles */
+        .resize-handle {
+            position: absolute;
+            background: transparent;
+        }
+
+        .resize-n { top: -4px; left: 4px; right: 4px; height: 8px; cursor: n-resize; }
+        .resize-s { bottom: -4px; left: 4px; right: 4px; height: 8px; cursor: s-resize; }
+        .resize-e { right: -4px; top: 4px; bottom: 4px; width: 8px; cursor: e-resize; }
+        .resize-w { left: -4px; top: 4px; bottom: 4px; width: 8px; cursor: w-resize; }
+        .resize-nw { top: -4px; left: -4px; width: 12px; height: 12px; cursor: nw-resize; }
+        .resize-ne { top: -4px; right: -4px; width: 12px; height: 12px; cursor: ne-resize; }
+        .resize-sw { bottom: -4px; left: -4px; width: 12px; height: 12px; cursor: sw-resize; }
+        .resize-se { bottom: -4px; right: -4px; width: 12px; height: 12px; cursor: se-resize; }
+
+        /* Taskbar */
+        .taskbar {
+            height: 28px;
+            background: var(--win-gray);
+            border-top: 2px solid;
+            border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+            display: flex;
+            align-items: center;
+            padding: 2px 4px;
+            gap: 4px;
+        }
+
+        .start-button {
+            height: 22px;
+            padding: 2px 8px;
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+            font-weight: bold;
+            font-size: 11px;
+            cursor: default;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .start-button:active {
+            border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+        }
+
+        .start-logo {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #FF0000 25%, #00FF00 25%, #00FF00 50%, #0000FF 50%, #0000FF 75%, #FFFF00 75%);
+        }
+
+        .taskbar-windows {
+            flex-grow: 1;
+            display: flex;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .taskbar-button {
+            height: 22px;
+            min-width: 120px;
+            max-width: 160px;
+            padding: 2px 8px;
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .taskbar-button.active {
+            border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+            background: repeating-linear-gradient(
+                45deg,
+                var(--win-gray),
+                var(--win-gray) 1px,
+                var(--win-white) 1px,
+                var(--win-white) 2px
+            );
+        }
+
+        .taskbar-button .btn-icon {
+            width: 14px;
+            height: 14px;
+            background: var(--win-title-blue);
+            flex-shrink: 0;
+        }
+
+        .taskbar-clock {
+            border: 2px solid;
+            border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+            padding: 2px 8px;
+            font-size: 11px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        /* Scrollbar styling */
+        .window-body::-webkit-scrollbar {
+            width: 16px;
+            height: 16px;
+        }
+
+        .window-body::-webkit-scrollbar-track {
+            background: repeating-linear-gradient(
+                45deg,
+                var(--win-gray),
+                var(--win-gray) 1px,
+                var(--win-white) 1px,
+                var(--win-white) 2px
+            );
+        }
+
+        .window-body::-webkit-scrollbar-thumb {
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+        }
+
+        .window-body::-webkit-scrollbar-button {
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="desktop">
+        <!-- Decorative Desktop Icons -->
+        <div class="desktop-icon" style="top: 20px; left: 20px;">
+            <div class="icon">💻</div>
+            <span class="label">My Computer</span>
+        </div>
+        <div class="desktop-icon" style="top: 100px; left: 20px;">
+            <div class="icon">📁</div>
+            <span class="label">File Manager</span>
+        </div>
+        <div class="desktop-icon" style="top: 180px; left: 20px;">
+            <div class="icon">🗑️</div>
+            <span class="label">Recycle Bin</span>
+        </div>
+        <div class="desktop-icon" style="top: 260px; left: 20px;">
+            <div class="icon">📄</div>
+            <span class="label">Notepad</span>
+        </div>
+
+        <!-- CV Window -->
+        <div class="window" id="cvWindow" style="top: 50px; left: 120px; width: 600px; height: 500px;">
+            <!-- Resize Handles -->
+            <div class="resize-handle resize-n" data-resize="n"></div>
+            <div class="resize-handle resize-s" data-resize="s"></div>
+            <div class="resize-handle resize-e" data-resize="e"></div>
+            <div class="resize-handle resize-w" data-resize="w"></div>
+            <div class="resize-handle resize-nw" data-resize="nw"></div>
+            <div class="resize-handle resize-ne" data-resize="ne"></div>
+            <div class="resize-handle resize-sw" data-resize="sw"></div>
+            <div class="resize-handle resize-se" data-resize="se"></div>
+
+            <!-- Title Bar -->
+            <div class="title-bar" id="titleBar">
+                <div class="system-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="title-bar-text">📋 VB Guru's CV - Notepad</div>
+                <div class="title-bar-controls">
+                    <button id="minimizeBtn" title="Minimize">▼</button>
+                    <button id="maximizeBtn" title="Maximize">▲</button>
+                </div>
+            </div>
+
+            <!-- Menu Bar -->
+            <div class="menu-bar">
+                <div class="menu-item"><span>F</span>ile</div>
+                <div class="menu-item"><span>E</span>dit</div>
+                <div class="menu-item"><span>S</span>earch</div>
+                <div class="menu-item"><span>H</span>elp</div>
+            </div>
+
+            <!-- Window Body -->
+            <div class="window-body">
+                <div class="window-content">
+                    <h1>Visual Basic Developer's Curriculum Vitae</h1>
+                    <p><strong>Name:</strong> VB Guru (a.k.a. The Spaghetti Code Sorcerer)</p>
+                    <p><strong>Email:</strong> vbguru@vb.net (but I still use AOL)</p>
+                    <p><strong>Phone:</strong> Dial-up only, please</p>
+
+                    <h2>Professional Summary</h2>
+                    <p>Seasoned Visual Basic developer with 20+ years of experience turning coffee into code. Expert in creating applications that work perfectly... on Windows 95. Passionate about Print statements, global variables, and making 'On Error Resume Next' my best friend.</p>
+
+                    <h2>Skills</h2>
+                    <ul>
+                        <li><span class="highlight">VB6 Wizardry:</span> Master of forms, controls, and that satisfying 'ding' sound when you compile</li>
+                        <li><span class="highlight">Spaghetti Architecture:</span> Code so tangled, even I get lost</li>
+                        <li><span class="highlight">Error Handling:</span> Resume Next - because debugging is for quitters</li>
+                        <li><span class="highlight">Database Integration:</span> Access databases (and occasionally SQL Server, when feeling fancy)</li>
+                        <li><span class="highlight">UI Design:</span> Gray buttons on gray backgrounds - the classic look</li>
+                    </ul>
+
+                    <h2>Professional Experience</h2>
+                    <h3>Senior VB Developer - Ancient Software Corp (1998 - Present)</h3>
+                    <ul>
+                        <li>Developed enterprise applications using VB6, ensuring they run flawlessly on 256MB RAM machines</li>
+                        <li>Maintained legacy systems that "just work" (until they don't)</li>
+                        <li>Migrated code from VB4 to VB6 - the pinnacle of my career</li>
+                        <li>Trained junior developers on the art of copy-paste programming</li>
+                    </ul>
+
+                    <h3>VB Intern - Startup Dreams Inc (1997 - 1998)</h3>
+                    <ul>
+                        <li>Learned to love the blue screen of death (BSOD) as a debugging tool</li>
+                        <li>Mastered the use of MsgBox for all user interactions</li>
+                        <li>Discovered that "Option Explicit" is optional</li>
+                    </ul>
+
+                    <h2>Education</h2>
+                    <p>Bachelor of Computer Science - University of Punch Cards (Graduated 1995)</p>
+                    <p>Minor in COBOL, because why not?</p>
+
+                    <h2>Interests</h2>
+                    <p>Collecting floppy disks, debugging by guessing, and arguing that VB is still relevant.</p>
+
+                    <footer>
+                        <p>This CV was generated entirely in Visual Basic... just kidding, but wouldn't that be cool?</p>
+                    </footer>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-bar-field">Ready</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Taskbar -->
+    <div class="taskbar">
+        <div class="start-button">
+            <div class="start-logo"></div>
+            Start
+        </div>
+        <div class="taskbar-windows" id="taskbarWindows">
+            <div class="taskbar-button active" id="taskbarBtn" onclick="restoreWindow()">
+                <div class="btn-icon"></div>
+                <span>VB Guru's CV</span>
+            </div>
+        </div>
+        <div class="taskbar-clock" id="clock">12:00</div>
+    </div>
+
+    <script>
+        // Window state
+        const win = document.getElementById('cvWindow');
+        const titleBar = document.getElementById('titleBar');
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        const maximizeBtn = document.getElementById('maximizeBtn');
+        const taskbarBtn = document.getElementById('taskbarBtn');
+        
+        let isDragging = false;
+        let isResizing = false;
+        let resizeDirection = '';
+        let startX, startY, startLeft, startTop, startWidth, startHeight;
+        let isMinimized = false;
+        let isMaximized = false;
+        let savedState = {};
+
+        // Clock
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Drag functionality
+        titleBar.addEventListener('mousedown', (e) => {
+            if (e.target.tagName === 'BUTTON' || isMaximized) return;
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            startLeft = win.offsetLeft;
+            startTop = win.offsetTop;
+            e.preventDefault();
+        });
+
+        // Resize functionality
+        document.querySelectorAll('.resize-handle').forEach(handle => {
+            handle.addEventListener('mousedown', (e) => {
+                if (isMaximized) return;
+                isResizing = true;
+                resizeDirection = handle.dataset.resize;
+                startX = e.clientX;
+                startY = e.clientY;
+                startLeft = win.offsetLeft;
+                startTop = win.offsetTop;
+                startWidth = win.offsetWidth;
+                startHeight = win.offsetHeight;
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        // Mouse move handler
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                win.style.left = (startLeft + dx) + 'px';
+                win.style.top = (startTop + dy) + 'px';
+            }
+            
+            if (isResizing) {
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                const minWidth = 300;
+                const minHeight = 200;
+                
+                let newWidth = startWidth;
+                let newHeight = startHeight;
+                let newLeft = startLeft;
+                let newTop = startTop;
+
+                // Handle horizontal resizing
+                if (resizeDirection.includes('e')) {
+                    newWidth = Math.max(minWidth, startWidth + dx);
+                }
+                if (resizeDirection.includes('w')) {
+                    const possibleWidth = startWidth - dx;
+                    if (possibleWidth >= minWidth) {
+                        newWidth = possibleWidth;
+                        newLeft = startLeft + dx;
+                    }
+                }
+
+                // Handle vertical resizing
+                if (resizeDirection.includes('s')) {
+                    newHeight = Math.max(minHeight, startHeight + dy);
+                }
+                if (resizeDirection.includes('n')) {
+                    const possibleHeight = startHeight - dy;
+                    if (possibleHeight >= minHeight) {
+                        newHeight = possibleHeight;
+                        newTop = startTop + dy;
+                    }
+                }
+
+                win.style.width = newWidth + 'px';
+                win.style.height = newHeight + 'px';
+                win.style.left = newLeft + 'px';
+                win.style.top = newTop + 'px';
+            }
+        });
+
+        // Mouse up handler
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            isResizing = false;
+        });
+
+        // Minimize functionality
+        minimizeBtn.addEventListener('click', () => {
+            win.classList.add('minimized');
+            isMinimized = true;
+            taskbarBtn.classList.remove('active');
+        });
+
+        // Restore from taskbar
+        function restoreWindow() {
+            if (isMinimized) {
+                win.classList.remove('minimized');
+                isMinimized = false;
+                taskbarBtn.classList.add('active');
+            }
+        }
+
+        // Maximize functionality
+        maximizeBtn.addEventListener('click', () => {
+            if (!isMaximized) {
+                // Save current state
+                savedState = {
+                    left: win.style.left,
+                    top: win.style.top,
+                    width: win.style.width,
+                    height: win.style.height
+                };
+                // Maximize
+                const desktop = document.querySelector('.desktop');
+                win.style.left = '0';
+                win.style.top = '0';
+                win.style.width = desktop.offsetWidth + 'px';
+                win.style.height = desktop.offsetHeight + 'px';
+                isMaximized = true;
+                maximizeBtn.textContent = '◻';
+            } else {
+                // Restore
+                win.style.left = savedState.left;
+                win.style.top = savedState.top;
+                win.style.width = savedState.width;
+                win.style.height = savedState.height;
+                isMaximized = false;
+                maximizeBtn.textContent = '▲';
+            }
+        });
+
+        // Prevent text selection during drag/resize
+        document.addEventListener('selectstart', (e) => {
+            if (isDragging || isResizing) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
